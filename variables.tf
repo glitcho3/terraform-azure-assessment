@@ -67,3 +67,8 @@ variable "tags" {
   default     = {}
 }
 
+variable "nsg_ssh_cidr" {
+  description = "CIDR block allowed to SSH to the VM. Override in your tfvars file with your public IP (e.g., '203.0.113.0/32')."
+  type        = string
+  default     = "0.0.0.0/32"   # no access by default
+}
