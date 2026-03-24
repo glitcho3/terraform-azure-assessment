@@ -1,7 +1,7 @@
-# Terraform Azure Bootstrap for Opella DevOps Challenge
+# Terraform Azure Bootstrap for DevOps Challenge
 
 This repository contains a modular Terraform solution for provisioning Azure
-infrastructure, created as part of the Opella DevOps technical assessment. It
+infrastructure, created as part of the DevOps technical assessment. It
 demonstrates:
 
 - A reusable Virtual Network (VNet) module.
