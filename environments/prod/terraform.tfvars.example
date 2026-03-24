@@ -1,0 +1,16 @@
+workload    = "myapp"
+environment = "prod"
+location    = "westeurope"
+
+create_networking = true
+create_compute    = true
+create_database   = true
+create_storage    = true
+
+admin_ssh_public_key_path = "~/.ssh/id_rsa_prod.pub"
+db_admin_password = "ProductionPassword123!"
+
+tags = {
+  owner       = "platform-team"
+  cost_center = "cc-999"
+}

@@ -1,0 +1,80 @@
+#cloud-config
+package_update: true
+packages:
+  - netcat-openbsd
+
+write_files:
+  - path: /usr/local/bin/log.sh
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      # Usage: log.sh <service> <level> <message>
+      # Writes one JSON line per call to /var/log/bootstrap.json
+      #
+      # Log contract:
+      #   format   : JSON lines, one event per line
+      #   encoding : UTF-8
+      #   timestamp: ISO 8601 UTC
+      #   keys     : timestamp, service.name, host.name, log.level, message
+      #   no multiline events
+      #
+      # Compatible with: Logstash (codec => json), Fluent Bit, Vector,
+      #   New Relic Infrastructure Agent, Azure Monitor Agent.
+      # No transformation required on the receiver side.
+
+      SERVICE="$1"
+      LEVEL="$2"
+      MESSAGE="$3"
+      TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+      HOST=$(hostname)
+      printf '{"timestamp":"%s","service.name":"%s","host.name":"%s","log.level":"%s","message":"%s"}\n' \
+        "$TS" "$SERVICE" "$HOST" "$LEVEL" "$MESSAGE" \
+        >> /var/log/bootstrap.json
+
+  - path: /etc/logrotate.d/bootstrap
+    content: |
+      /var/log/bootstrap.json {
+          daily
+          rotate 7
+          compress
+          missingok
+          notifempty
+          copytruncate
+      }
+
+  # placeholder: proxy configuration
+  # Uncomment and adapt if the VM must route traffic through an HTTP proxy.
+  # - path: /etc/environment
+  #   content: |
+  #     http_proxy=http://proxy.internal:3128
+  #     https_proxy=http://proxy.internal:3128
+  #     no_proxy=localhost,169.254.169.254
+
+runcmd:
+  - /usr/local/bin/log.sh ${service} INFO bootstrap-start
+
+  - /usr/local/bin/log.sh ${service} INFO hello-world
+
+  # DB connectivity check.
+  # Disabled when db_host is empty. nc exits non-zero if unreachable;
+  # we catch that and log the result rather than failing cloud-init.
+  - |
+    DB_HOST="${db_host}"
+    if [ -n "$DB_HOST" ]; then
+      /usr/local/bin/log.sh ${service} INFO "checking-db $DB_HOST"
+      if nc -zv "$DB_HOST" 5432 2>/dev/null; then
+        /usr/local/bin/log.sh ${service} INFO "db-reachable $DB_HOST"
+      else
+        /usr/local/bin/log.sh ${service} ERROR "db-unreachable $DB_HOST"
+      fi
+    fi
+
+  - /usr/local/bin/log.sh ${service} INFO bootstrap-complete
+
+  # placeholder: BLE / edge gateway setup
+  # - bash /opt/edge/setup-gateway.sh
+
+  # placeholder: external log shipper agent install
+  # Expected: agent tails /var/log/bootstrap.json, forwards JSON as-is.
+  # Tested with: Fluent Bit, Vector, New Relic Infrastructure Agent.
+  # - bash /opt/shipper/install.sh

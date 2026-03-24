@@ -1,0 +1,18 @@
+workload    = "myapp"
+environment = "dev"
+location    = "westeurope"
+
+create_networking = true
+create_compute    = true
+create_database   = false
+create_storage    = true
+
+admin_ssh_public_key_path = "~/.ssh/id_rsa.pub"
+
+# Required when create_database = true:
+# db_admin_password = "ChangeMe123!"
+
+tags = {
+  owner       = "platform-team"
+  cost_center = "cc-000"
+}
