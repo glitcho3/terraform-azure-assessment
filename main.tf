@@ -19,8 +19,8 @@ module "networking" {
     "default" = { address_prefixes = ["10.0.1.0/24"] }
     "db"      = { address_prefixes = ["10.0.2.0/24"] }
   }
-  tags = local.tags
-  nsg_ssh_cidr = var.nsg_ssh_cidr   # add this variable in root variables.tf
+  tags         = local.tags
+  nsg_ssh_cidr = var.nsg_ssh_cidr # add this variable in root variables.tf
 
 }
 
