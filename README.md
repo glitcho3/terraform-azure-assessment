@@ -137,8 +137,11 @@ For detailed input/output documentation, see the individual module READMEs in `m
 
 ## Observability & Logging
 
-The VM logs to `/var/log/bootstrap.json` in JSON format using OpenTelemetry
-semantic convention keys:
+This format is vendor‑neutral and can be ingested by any logging system (New
+Relic, Logstash, Fluent Bit, etc.) without transformation. The local test
+(`make local-test`) verifies the same contract.
+
+**Variables**:
 
 - `timestamp`
 - `service.name`
@@ -146,9 +149,14 @@ semantic convention keys:
 - `log.level`
 - `message`
 
-This format is vendor‑neutral and can be ingested by any logging system (New
-Relic, Logstash, Fluent Bit, etc.) without transformation. The local test
-(`make local-test`) verifies the same contract.
+### Bootstrap Configuration
+
+The file `vm-bootstrap.yaml` configures the VM at first boot:
+- Writes structured JSON logs to `/var/log/bootstrap.json` using OpenTelemetry
+  keys (`timestamp`, `service.name`, `host.name`, `log.level`, `message`).
+- Optionally checks PostgreSQL connectivity if `db_host` is provided.
+- Logs a simple sequence: `bootstrap-start`, `hello-world`, `db-reachable`/`db-unreachable`, `bootstrap-complete`.
+
 
 ## GitHub Actions CI
 

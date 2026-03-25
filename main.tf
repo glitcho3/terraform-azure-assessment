@@ -34,9 +34,9 @@ module "compute" {
   location                  = var.location
   subnet_id                 = module.networking[0].subnet_ids["default"] # Use default subnet for VM
   admin_ssh_public_key_path = var.admin_ssh_public_key_path
-  custom_data = templatefile("${path.module}/cloud-init.yaml", {
-    service = local.vm_name
-    db_host = var.create_database ? module.database[0].fqdn : ""
+  custom_data = templatefile("${path.module}/vm-bootstrap.yaml", {
+    service = var.service_name
+    db_host = var.db_host
   })
   tags = local.tags
 }
