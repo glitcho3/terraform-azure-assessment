@@ -1,4 +1,4 @@
-# Terraform Azure Bootstrap for DevOps Challenge
+# Terraform Azure for DevOps Challenge
 
 This repository contains a modular Terraform solution for provisioning Azure
 infrastructure, created as part of the DevOps technical assessment. It
@@ -22,10 +22,10 @@ demonstrates:
 ├── cloud-init.yaml                       # Cloud‑init script (structured logging)
 ├── docs/
 │   ├── ADR-00-bootstrap-sandbox.md       # Generic foundation decisions
-│   └── ADR-01-devops-challenge.md # Assessment‑specific decisions
+│   └── ADR-01-devops-challenge.md        # Assessment‑specific decisions
 ├── environments/
-│   ├── dev/terraform.tfvars.example      # Example dev variables (not committed)
-│   └── prod/terraform.tfvars.example     # Example prod variables (not committed)
+│   ├── dev/terraform.tfvars.example      # Example dev variables 
+│   └── prod/terraform.tfvars.example     # Example prod variables 
 ├── local-test/                           # Docker‑based local testing of logging
 │   ├── bootstrap.sh
 │   ├── docker-compose.yml
@@ -61,14 +61,12 @@ demonstrates:
    ```
 
 2. **Set up environment variables**  
-   Copy the example tfvars and edit with your values (do not commit the actual
-   tfvars):
+   Copy the example tfvars and edit with your values (do not commit the actual tfvars):
 
    ```bash
    cp environments/dev/terraform.tfvars.example environments/dev/terraform.tfvars
 
-   # edit environments/dev/terraform.tfvars (set workload, environment,
-   # location, ssh key path)
+   # edit environments/dev/terraform.tfvars (set workload, environment, location, ssh key path)
    ```
 
 3. **Authenticate to Azure** (if you want to see a plan)
@@ -80,20 +78,42 @@ demonstrates:
 
 4. **Run a plan** (without applying)
 
+   You can use the provided `Makefile` (defaults to the dev environment):
    ```bash
-   make plan   # uses environments/dev/terraform.tfvars by default
+   make plan
+   ```
+
+   Or run Terraform directly:
+   ```bash
+   terraform plan -var-file=environments/dev/terraform.tfvars -out=tfplan
    ```
 
 5. **View the included plan output**  
-   The repository contains a sample `plan.txt` generated from a successful
-plan. This shows what resources would be created.
+   The repository contains a sample `plan.txt` generated from a successful plan. This shows what resources would be created.
 
-6. **Test the logging contract locally** (no Azure needed)
+6. **Apply the infrastructure** (optional – only if you intend to deploy)
 
+   Using the Makefile:
    ```bash
-   make local-test
+   make apply
    ```
-   This spins up a Docker container that mimics the VM and logs structured JSON.
+
+   Or directly:
+   ```bash
+   terraform apply tfplan
+   ```
+
+7. **Destroy the infrastructure** when done
+
+   Using the Makefile:
+   ```bash
+   make destroy
+   ```
+
+   Or directly:
+   ```bash
+   terraform destroy -var-file=environments/dev/terraform.tfvars
+   ```
 
 ## Modules
 
@@ -138,7 +158,7 @@ plan` for both `dev` and `prod` environments.
 
 > **Note**: To run the plan successfully in the pipeline, you need to set up
 > Azure service principal secrets in the repository. The pipeline is included
-> for demonstration; it is not required for the assessment evaluation.
+> for demonstration.
 
 ## Design Decisions
 
