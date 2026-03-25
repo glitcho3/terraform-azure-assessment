@@ -130,7 +130,6 @@ Terraform will perform the following actions:
       [32m+[0m[0m allow_extension_operations                             = true
       [32m+[0m[0m bypass_platform_safety_checks_on_user_schedule_enabled = false
       [32m+[0m[0m computer_name                                          = (known after apply)
-      [32m+[0m[0m custom_data                                            = (sensitive value)
       [32m+[0m[0m disable_password_authentication                        = true
       [32m+[0m[0m disk_controller_type                                   = (known after apply)
       [32m+[0m[0m extensions_time_budget                                 = "PT1H30M"

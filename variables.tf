@@ -72,3 +72,4 @@ variable "nsg_ssh_cidr" {
   type        = string
   default     = "0.0.0.0/32" # no access by default
 }
+

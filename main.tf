@@ -24,7 +24,7 @@ module "networking" {
 
 }
 
-# Compute (optional, requires networking)
+# Compute 
 module "compute" {
   count  = var.create_compute ? 1 : 0
   source = "./modules/compute"
@@ -32,16 +32,14 @@ module "compute" {
   name                      = local.vm_name
   resource_group_name       = module.resource_group.name
   location                  = var.location
-  subnet_id                 = module.networking[0].subnet_ids["default"] # Use default subnet for VM
+  subnet_id                 = module.networking[0].subnet_ids["default"]
   admin_ssh_public_key_path = var.admin_ssh_public_key_path
-  custom_data = templatefile("${path.module}/vm-bootstrap.yaml", {
-    service = var.service_name
-    db_host = var.db_host
-  })
-  tags = local.tags
+  service_name              = local.vm_name                                      # <-- use local.vm_name
+  db_host                   = var.create_database ? module.database[0].fqdn : "" # <-- conditionally get DB FQDN
+  tags                      = local.tags
 }
 
-# Database (optional, requires networking)
+# Database 
 module "database" {
   count  = var.create_database ? 1 : 0
   source = "./modules/database"

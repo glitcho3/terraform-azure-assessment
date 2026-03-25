@@ -52,3 +52,14 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "service_name" {
+  description = "Service name used in logs"
+  type        = string
+}
+
+variable "db_host" {
+  description = "Database hostname (optional, can be empty)"
+  type        = string
+  default     = ""
+}
