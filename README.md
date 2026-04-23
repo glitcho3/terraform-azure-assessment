@@ -120,7 +120,7 @@ demonstrates:
 | Module           | Purpose                                                  |
 |------------------|----------------------------------------------------------|
 | `networking`     | Creates a VNet and subnets (`default` and `db`).         |
-| `compute`        | Deploys a Ubunto VM with cloud‑init and structured logs. |
+| `compute`        | Deploys a Ubuntu VM with cloud‑init and structured logs. |
 | `database`       | Creates a PostgreSQL flexible server (optional).         |
 | `resource_group` | Creates the resource group (always present).             |
 
